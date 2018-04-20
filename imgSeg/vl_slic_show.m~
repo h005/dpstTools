@@ -1,0 +1,5 @@
+function vl_slic_show(image, segments)
+
+[sx, sy] = vl_grad(double(segments), 'type', 'forward');
+s = find(sx | sy);
+size(find(sx | sy))

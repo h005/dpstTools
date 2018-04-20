@@ -1,6 +1,6 @@
 %% this script was created for deep feature analysis
 
-folder = '/home/hejw005/Documents/learning/dpst/tools/data/summit';
+folder = '../data/summit';
 fileList = dir(folder);
 
 for i = 1 : length(fileList)

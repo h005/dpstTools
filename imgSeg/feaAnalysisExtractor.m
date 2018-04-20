@@ -17,7 +17,7 @@ dim_m 0
 [] % the array with the shape of 466 X 700
 
 %}
-
+disp(fname)
 fid = fopen(fname, 'r');
 layer = {};
 while 1

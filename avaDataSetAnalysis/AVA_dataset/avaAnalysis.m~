@@ -1,0 +1,9 @@
+score = load('AVA.txt');
+imgIdx = load('image.list');
+sc = score(:,3:12);
+sc = mean(sc,2);
+
+[scSorted, index] = sort(sc,'descend');
+
+top10Idx = index(1 : length(index) * 0.1);
+bottom10Idx = index(end - length(index) * 0.1 : end);

@@ -1,8 +1,12 @@
 %% feaSegmentation
 clear
+close all
 clc
 
-feaFolder = '../data/summit/';
+% show the segmentation result or not
+showFlag = 1;
+
+feaFolder = '../data/myLandscape/';
 feaList = dir(feaFolder);
 
 feaImList = {};
@@ -12,8 +16,11 @@ for i = 1:length(feaList)
     if feaList(i).isdir == 1
         continue;
     else
-        if strcmp(feaList(i).name(end - 11 : end),'layer0_1.mat') == 1
+        if length(feaList(i).name) < 12
+            continue;
+        elseif strcmp(feaList(i).name(end - 11 : end),'layer0_1.mat') == 1
             load([feaFolder feaList(i).name]);
+            feaImList{counter}.name = feaList(i).name(1 : end - 13);
             feaImList{counter}.im = im;
             feaImList{counter}.size = size(im);
             feaImList{counter}.len = feaImList{counter}.size(1) * feaImList{counter}.size(2);
@@ -26,7 +33,7 @@ for i = 1:length(feaList)
 end
 
 %% kmeans for segmentation and show the segmentation result
-num_k = 2;
+num_k = 3;
 
 fea = [];
 for i = 1 : length(feaImList)
@@ -34,10 +41,21 @@ for i = 1 : length(feaImList)
     fea = cat(1,fea,tmpfea);
 end
 
-idx = kmeans(fea,2);
+idx = kmeans(fea,num_k);
 
 %% show the segmentations for each image
-m_colorMap = ceil(jet(num_k) * 255);
+m_colorMap = [0, 0, 255;
+    0, 255, 0;
+    0, 0, 0;
+    255, 255, 255;
+    255, 0, 0;
+    255, 255, 0;
+    127, 127, 127;
+    0, 255, 255;
+    255, 0, 255;
+    ];
+m_colorMap = m_colorMap(1:num_k,:);
+% m_colorMap = ceil(jet(num_k) * 255);
 % for each cluster
 for i = 1 : num_k
     % for each image
@@ -59,8 +77,17 @@ for i = 1 : num_k
 end
 
 %% show the figure
-
-for i = 1 : length(feaImList)
-    figure(i)
-    imshow(feaImList{i}.mask)
+if showFlag == 1
+    for i = 1 : length(feaImList)
+        figure(i)
+        subplot(1,2,1)
+        imshow(feaImList{i}.mask)
+        r = imread([feaFolder feaImList{i}.name '.jpg']);
+        subplot(1,2,2)
+        imshow(r);
+        title(feaImList{i}.name)
+    end
 end
+
+%% texture generation
+

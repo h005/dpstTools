@@ -61,11 +61,33 @@ for i = 1 : length(feaImList)
         disp(['imwrite ' feaFolder, feaImList{i}.name '/' maskName{j} '.png done']);
     end    
     
-    % output the mask
-    imwrite(feaImList{i}.mask, [feaFolder, feaImList{i}.name '/mask.png']);
-    disp(['imwrite ' feaFolder, feaImList{i}.name '/mask.png done'])
+    % output the mask with padding as well as the original image with
+    % padding
+    
+    % padding the image
+    % enlarge the image with the ratio of 0.1 on each side
+    paddingSize = round(feaImList{i}.size(1:2) * 1.2);
+    paddingMask = zeros(paddingSize(1), paddingSize(2), 3, 'uint8');
+%     paddingMask(:, :, 1) = paddingMask(:, :, 1) + 180;
+%     paddingMask(:, :, 2) = paddingMask(:, :, 2) + 60;
+    wRange = round(0.1 * feaImList{i}.size(1)) : round(0.1 * feaImList{i}.size(1)) + feaImList{i}.size(1) -1;
+    hRange = round(0.1 * feaImList{i}.size(2)) : round(0.1 * feaImList{i}.size(2)) + feaImList{i}.size(2) -1;
+    paddingMask(wRange,hRange,1) = feaImList{i}.mask(:,:,1);
+    paddingMask(wRange,hRange,2) = feaImList{i}.mask(:,:,2);
+    paddingMask(wRange,hRange,3) = feaImList{i}.mask(:,:,3);
+    
+    imwrite(paddingMask, [feaFolder, feaImList{i}.name '/mask_padding.png']);
+    disp(['imwrite ' feaFolder, feaImList{i}.name '/mask_padding.png done'])
+    
+    paddingMask = zeros(paddingSize(1), paddingSize(2), 3, 'uint8');
+%     paddingMask(:, :, 1) = paddingMask(:, :, 1) + 180;
+%     paddingMask(:, :, 2) = paddingMask(:, :, 2) + 60;
+    paddingMask(wRange,hRange,1) = r(:,:,1);
+    paddingMask(wRange,hRange,2) = r(:,:,2);
+    paddingMask(wRange,hRange,3) = r(:,:,3);
+    
+    imwrite(paddingMask, [feaFolder, feaImList{i}.name '/' feaImList{i}.name '_padding.png']);
+    disp(['imwrite ' feaFolder, feaImList{i}.name '/' feaImList{i}.name '_padding.png done'])
 end
-
-
 
 
